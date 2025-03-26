@@ -6,7 +6,7 @@ RUN apk update && \
     apk add --no-cache glpk glpk-dev
 
 # Set the working directory
-WORKDIR /l1
+WORKDIR /opt
 
 # Copy the current directory contents into the container at /app
-COPY /l1 /l1
+COPY . /opt
