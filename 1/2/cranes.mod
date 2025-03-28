@@ -14,13 +14,19 @@ param dist{m1 in M, m2 in M} >= 0;
 var xI{m1 in M, m2 in M}   >= 0;  # dźwigi typu I
 var xII{m1 in M, m2 in M}  >= 0;  # dźwigi typu II
 
+display surpI;
+display surpII;
+display shortI;
+display shortII;
+display dist;
+
 # Funkcja celu: minimalizacja kosztów transportu
 # Zakładamy, że transport 1 dźwigu typu I kosztuje dist[m1,m2],
 # a typu II jest o 20% droższy, czyli 1.2 * dist[m1,m2].
 minimize TotalCost:
    sum{m1 in M, m2 in M} (
      dist[m1,m2]   * xI[m1,m2]
-   + 1.2*dist[m1,m2] * xII[m1,m2]
+   + 1.2 * dist[m1,m2] * xII[m1,m2]
    );
 
 # OGRANICZENIA

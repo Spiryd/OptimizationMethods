@@ -1,0 +1,27 @@
+data;
+
+set M := Opole  Brzeg  Nysa  Prudnik  StrzelceOpl  Kozle  Raciborz;
+
+param:      shortI  shortII  surpI  surpII  :=
+  Opole         0      2       7       0
+  Brzeg         10     0       0       1
+  Nysa          0      0       6       2
+  Prudnik       4      0       0       10
+  StrzelceOpl   0      4       5       0
+  Kozle         8      2       0       0
+  Raciborz      0      1       0     0
+;
+
+# Macierz odległości dist[m1,m2]
+param dist:
+                               Opole               Brzeg               Nysa                Prudnik             StrzelceOpl         Kozle               Raciborz :=
+Opole                          0.0                 38.8                47.1                45.5                31.8                42.4                67.4
+Brzeg                          38.8                0.0                 43.8                60.3                70.7                79.5                100.7
+Nysa                           47.1                43.8                0.0                 24.4                68.8                66.4                76.0
+Prudnik                        45.5                60.3                24.4                0.0                 55.4                47.4                52.1
+StrzelceOpl                    31.8                70.7                68.8                55.4                0.0                 18.8                47.2
+Kozle                          42.4                79.5                66.4                47.4                18.8                0.0                 28.4
+Raciborz                       67.4                100.7               76.0                52.1                47.2                28.4                0.0
+;
+
+end;
