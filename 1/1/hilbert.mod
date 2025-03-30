@@ -29,8 +29,8 @@ s.t. row_constr{i in I}:
 solve;
 
 # Wyświetlanie wyniku
-display x;
-display obj;
+#display x;
+#display obj;
 
 # Obliczenie błędu względnego
 param err := sqrt( sum{i in I} (x[i] - 1)^2 ) / sqrt(n);

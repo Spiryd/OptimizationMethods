@@ -1,0 +1,50 @@
+data;
+
+set SUBJECTS := Algebra Analiza Fizyka ChemiaMin ChemiaOrg;
+set GROUPS := 1 2 3 4;
+set DAYS := Pn Wt Sr Cz Pt;
+
+# Maksymalna godzin dziennie
+param daily_limit := 4;
+
+# Przerwa obiadowa
+param lunch_start := 12.0;
+param lunch_end   := 14.0;
+param lunch_duration := 1.0;
+
+# Now, define training slots (each as a triple: DAY, START, END)
+set TRAININGS :=
+  (Pn, 13.0, 15.0)
+  (Sr, 11.0, 13.0)
+  (Sr, 13.0, 15.0);
+
+# Dla każdej grupy(przedmiot, grupa) podajemy dzien, godziny rozpoczęcia i zakończenia oraz preferencje
+param:
+                day     start_time  end_time  pref :=
+Algebra 1       Pn      13.0        15.0      5
+Algebra 2       Wt      10.0        12.0      4
+Algebra 3       Sr      10.0        12.0      10
+Algebra 4       Sr      11.0        13.0      5
+
+Analiza 1       Pn      13.0        15.0      4
+Analiza 2       Wt      10.0        12.0      4
+Analiza 3       Sr      11.0        13.0      5
+Analiza 4       Cz      8.0         10.0      6
+
+Fizyka 1        Wt      8.0         11.0      3
+Fizyka 2        Wt      10.0        13.0      5
+Fizyka 3        Cz      15.0        18.0      7
+Fizyka 4        Cz      17.0        20.0      8
+
+ChemiaMin 1     Pn      8.0         10.0      10
+ChemiaMin 2     Pn      8.0         10.0      10
+ChemiaMin 3     Cz      13.0        15.0      7
+ChemiaMin 4     Pt      13.0        15.0      5
+
+ChemiaOrg 1     Pn      9.0         10.5      0
+ChemiaOrg 2     Pn      10.5        12.0      5
+ChemiaOrg 3     Pt      11.0        12.5      3
+ChemiaOrg 4     Pt      13.0        14.5      4
+;
+
+end;

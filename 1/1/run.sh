@@ -1,4 +1,4 @@
-for N in 5 10 15 20
+for N in 6 7 8;
 do
   echo "=== n = $N ==="
   cat <<EOF > tmp.dat
