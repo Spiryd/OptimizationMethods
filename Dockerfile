@@ -10,3 +10,6 @@ WORKDIR /opt
 
 # Copy the current directory contents into the container at /app
 COPY . /opt
+
+# Ensure all .sh files have execution permissions
+RUN find /opt -name "*.sh" -exec chmod +x {} \;
