@@ -1,4 +1,4 @@
-# Maksymilian Neumann'
+# Maksymilian Neumann
 
 # --- PARAMETRY ---
 set SUBJECTS;             # Przedmioty, np. Analiza, Fizyka, itd.
