@@ -1,1 +1,1 @@
-glpsol --model cranes.mod --data cranes.dat --wcpxlp output.lp
+glpsol --model 2.mod --data 2.dat

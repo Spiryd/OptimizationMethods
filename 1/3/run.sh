@@ -1,1 +1,1 @@
-glpsol --model refinery.mod --data refinery.dat
+glpsol --model 3.mod --data 3.dat

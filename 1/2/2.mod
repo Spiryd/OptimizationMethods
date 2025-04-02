@@ -43,6 +43,6 @@ s.t. DemandII{m2 in M}:
 
 solve;
 
-display xI, xII, TotalCost;
+display xI, xII, xIItoI, TotalCost;
 
 end;

@@ -5,5 +5,5 @@ do
 param n := $N;
 end;
 EOF
-  glpsol --model hilbert.mod --data tmp.dat
+  glpsol --model 1.mod --data tmp.dat
 done

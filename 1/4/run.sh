@@ -1,1 +1,1 @@
-glpsol --model schedule.mod --data schedule.dat
+glpsol --model 4.mod --data 4.dat
