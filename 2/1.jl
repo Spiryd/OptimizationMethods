@@ -29,16 +29,17 @@ model = Model(GLPK.Optimizer)
 for i in 1:length(widths)
     @constraint(model, sum(patterns[p][i] * x[p] for p in 1:length(patterns)) >= demand[i])
 end
+
 # —————— 3. FUNKCJA CELU ——————
-#minimalizuj liczbę użytych desek
-@objective(model, Min, sum(x))
+# minimalizuj ilość odpadó (odpadek z cięcia który nie można wykożystać + deski które nie zostały wykorzystane)
+@objective(model, Min, sum((W - sum(patterns[p][i] * widths[i] for i in 1:length(widths))) * x[p] for p in 1:length(patterns)) + sum((sum(patterns[p][i] * x[p] for p in 1:length(patterns)) - demand[i]) * widths[i] for i in 1:length(widths)))
 
 # —————— 4. ROZWIĄŻ ——————
 optimize!(model)
 
 # —————— 5. WYNIKI ——————
 println("Status: ", termination_status(model))
-println("Minimalna liczba desek: ", objective_value(model))
+println("Odpad: ", objective_value(model))
 println("Wybrane wzory cięcia i ich liczby:")
 for p in 1:length(patterns)
     xp = value(x[p])
