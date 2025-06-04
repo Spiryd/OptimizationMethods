@@ -30,13 +30,13 @@ def main():
     print(summary.T[["min", "mean", "50%", "max"]].rename(columns={"50%": "median"}))
 
     # ——— Worst 5 by diff (largest positive gap) ———
-    worst5_diff = df.nlargest(5, "diff")[["filename", "best_objective", "Cmax", "diff"]]
+    worst5_diff = df.nlargest(5, "diff")[["subfolder", "filename", "best_objective", "Cmax", "diff"]]
     print("\nWorst 5 by Diff (Cmax – Best):")
     print(worst5_diff.to_string(index=False))
 
     # ——— Best 5 (smallest non‐negative diff) ———
     # Filter out any negative diffs, then take 5 smallest
-    best5_diff = df.nsmallest(5, "diff")[["filename", "best_objective", "Cmax", "diff"]]
+    best5_diff = df.nsmallest(5, "diff")[["subfolder", "filename", "best_objective", "Cmax", "diff"]]
     print("\nBest 5 by Diff (Cmax – Best):")
     print(best5_diff.to_string(index=False))
 
