@@ -122,7 +122,7 @@ function find_min_T(p::Matrix{Float64})
 end
 
 # ——————————————————————————————————————————————————————————————————————————————
-# Steps 2–4: Round the LP solution x* to integral via Lemma 17.7:
+# Steps 3–4: Round the LP solution x* to integral via Lemma 17.7:
 #   (a) Assign all “integral” jobs (those with max_j x[i,j] ≥ 1–tol),
 #   (b) Build bipartite graph H on remaining fractional jobs vs. machines,
 #   (c) Perform leaf‐stripping + cycle‐matching to get a perfect matching.
@@ -135,11 +135,13 @@ function refine_x(x::Matrix{Float64}, p::Matrix{Float64}, tol::Float64 = eps(Flo
     # For each job, if the largest x[i, j] is at least 1-tol, treat as integral.
     assign = zeros(Int, n)   # assign[i] = assigned machine for job i (0 if not yet assigned)
     fractional = Int[]       # List of jobs that are not integrally assigned
+    int_jobs  = 0
     for i in 1:n
         maxval, jmax = findmax(x[i, :])
         if maxval ≥ 1 - tol
             # This job is essentially integrally assigned to machine jmax
             assign[i] = jmax
+            int_jobs += 1
         else
             # This job is fractionally assigned (needs rounding)
             push!(fractional, i)
@@ -296,7 +298,7 @@ function refine_x(x::Matrix{Float64}, p::Matrix{Float64}, tol::Float64 = eps(Flo
 
     # (g) Compute makespan (maximum load over all machines)
     Cmax = maximum(loads)
-    return x_final, Cmax
+    return x_final, Cmax, int_jobs
 end
 
 # ——————————————————————————————————————————————————————————————————————————————
@@ -337,16 +339,13 @@ end
 function approx_unrelated_parallel(p::Matrix{Float64})
     n, m = size(p)
 
-    # Step 0: Greedy → α
-    α = calc_alpha(p)
-
-    # Step 1: Binary‐search for T*
-    println("→ Step 1:")
+    # Step 1-2: Binary‐search for T*
+    #println("→ Step 1:")
     T_star, x_star = find_min_T(p)
 
-    # Steps 2–4: Round x_star to integral → x_final, compute Cmax
-    println("→ Step 2:")
-    x_final, Cmax = refine_x(x_star, p)
+    # Steps 3–4: Round x_star to integral → x_final, compute Cmax
+    #println("→ Step 2:")
+    x_final, Cmax, intLP  = refine_x(x_star, p)
 
     # Step 5: Compute ratio and warn if >2
     ratio = Cmax / T_star
@@ -359,7 +358,7 @@ function approx_unrelated_parallel(p::Matrix{Float64})
         @error("Solution is NOT feasible!")
     end
 
-    return (n = n, m = m, T_star = T_star, Cmax = Cmax, ratio = ratio)
+    return (n = n, m = m, T_star = T_star, Cmax = Cmax, ratio = ratio, int_in_lp = intLP)
 end
 
 # ——————————————————————————————————————————————————————————————————————————————
@@ -381,7 +380,7 @@ function process_folder(basefolder::String, subs::Vector{String})
     # Overwrite existing CSV
     outfile = "RCmax_summary.csv"
     open(outfile, "w") do io
-        println(io, "subfolder,filename,n,m,T_star,Cmax,ratio,time_total")
+        println(io, "subfolder,filename,n,m,T_star,Cmax,ratio,time_total,int_in_lp")
     end
     violation_count = 0
 
@@ -394,7 +393,7 @@ function process_folder(basefolder::String, subs::Vector{String})
 
         p = read_instance(fpath)
 
-        println("Processing file: $fpath")
+        # println("Processing file: $fpath")
 
         t_total = @elapsed res = approx_unrelated_parallel(p)
 
@@ -418,7 +417,8 @@ function process_folder(basefolder::String, subs::Vector{String})
                 res.T_star,
                 res.Cmax,
                 round(res.ratio, digits=6),
-                round(t_total, digits=3)
+                round(t_total, digits=3),
+                res.int_in_lp
             ), ','))
         end
     end

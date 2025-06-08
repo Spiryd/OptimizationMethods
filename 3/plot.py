@@ -19,6 +19,10 @@ def main():
     df["T_star"] = pd.to_numeric(df["T_star"], errors="coerce")
     df["n"] = pd.to_numeric(df["n"], errors="coerce")
     df["best_objective"] = pd.to_numeric(df["best_objective"], errors="coerce")
+    df["int_in_lp"]    = pd.to_numeric(df["int_in_lp"], errors="coerce")
+    df["frac_int"] = df["int_in_lp"] / df["n"]
+    # corollary 17.4: int_in_lp ≥ n - m  ⇒  frac_int ≥ 1 - m/n
+    df["frac_lb"]  = 1 - df["m"] / df["n"]
 
     # === After loading & type conversions ===
     # Compute difference between our Cmax and the best known objective
@@ -108,6 +112,40 @@ def main():
     )
     plt.tight_layout(rect=[0,0,1,0.95])
     plt.savefig(plots_dir / "cmax_vs_best_objective.png", dpi=300)
+    plt.close()
+
+    # --- Plot 5: Total Run Time by Family ---
+    plt.figure(figsize=(12, 5))
+    sns.boxplot(
+        x="subfolder", y="time_total", data=df,
+        showfliers=False, palette="Set3"
+    )
+    plt.title("Total Run Time by Instance Family")
+    plt.xlabel("Instance Family")
+    plt.ylabel("Total Time (s)")
+    plt.xticks(rotation=45, ha="right")
+    plt.tight_layout()
+    plt.savefig(plots_dir / "time_by_family.png", dpi=300)
+    plt.close()
+
+    # --- Plot 6: Fraction of Jobs Integral in LP by Family ---
+    plt.figure(figsize=(12, 5))
+    ax = sns.boxplot(
+        x="subfolder", y="frac_int", data=df,
+        showfliers=False, palette="Set1"
+    )
+    
+    # overlay the theoretical lower‐bound as little horizontal ticks
+    sns.stripplot(
+        x="subfolder", y="frac_lb", data=df,
+        marker="_", size=12, color="black", ax=ax,
+    )
+    plt.title("Fraction of Jobs Integral in LP Extreme Point by Family")
+    plt.xlabel("Instance Family")
+    plt.ylabel("Fraction Integral")
+    plt.xticks(rotation=45, ha="right")
+    plt.tight_layout()
+    plt.savefig(plots_dir / "frac_int_by_family.png", dpi=300)
     plt.close()
 
     print("\n✅ Plots saved in:", plots_dir)
