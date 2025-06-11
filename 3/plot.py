@@ -71,12 +71,15 @@ def main():
     plt.savefig(plots_dir / "ratio_histogram.png", dpi=300)
     plt.close()
 
-    # --- Plot 3: Ratio vs. Number of Jobs (small legend) ---
+    # --- Plot 3: Ratio vs. Number of Jobs (with mean line, no integral jobs plot) ---
     plt.figure(figsize=(10, 5))
-    sns.scatterplot(
+    ax = sns.scatterplot(
         x="n", y="ratio", hue="subfolder", data=df,
         palette="tab10", alpha=0.7, edgecolor="w", s=50
     )
+    # Add mean line for ratio by n
+    mean_ratio = df.groupby("n")["ratio"].mean().reset_index()
+    plt.plot(mean_ratio["n"], mean_ratio["ratio"], color="black", linewidth=2, label="Mean Ratio")
     plt.title("Approximation Ratio vs. Number of Jobs")
     plt.xlabel("Number of Jobs (n)")
     plt.ylabel("Approximation Ratio")
@@ -86,6 +89,26 @@ def main():
     )
     plt.tight_layout(rect=[0,0,0.85,1])
     plt.savefig(plots_dir / "ratio_vs_n_scatter.png", dpi=300)
+    plt.close()
+
+    # --- Plot 3b: Total Run Time vs. Number of Jobs (with mean line) ---
+    plt.figure(figsize=(10, 5))
+    ax = sns.scatterplot(
+        x="n", y="time_total", hue="subfolder", data=df,
+        palette="tab10", alpha=0.7, edgecolor="w", s=50
+    )
+    # Add mean line for time by n
+    mean_time = df.groupby("n")["time_total"].mean().reset_index()
+    plt.plot(mean_time["n"], mean_time["time_total"], color="black", linewidth=2, label="Mean Time")
+    plt.title("Total Run Time vs. Number of Jobs")
+    plt.xlabel("Number of Jobs (n)")
+    plt.ylabel("Total Time (s)")
+    plt.legend(
+        title="Family", bbox_to_anchor=(1.02, 1), loc="upper left",
+        fontsize="small", title_fontsize="small", ncol=1
+    )
+    plt.tight_layout(rect=[0,0,0.85,1])
+    plt.savefig(plots_dir / "time_vs_n_scatter.png", dpi=300)
     plt.close()
 
     # --- Plot 4: Cmax vs. Best Known Objective (legend at bottom) ---
@@ -126,26 +149,6 @@ def main():
     plt.xticks(rotation=45, ha="right")
     plt.tight_layout()
     plt.savefig(plots_dir / "time_by_family.png", dpi=300)
-    plt.close()
-
-    # --- Plot 6: Fraction of Jobs Integral in LP by Family ---
-    plt.figure(figsize=(12, 5))
-    ax = sns.boxplot(
-        x="subfolder", y="frac_int", data=df,
-        showfliers=False, palette="Set1"
-    )
-    
-    # overlay the theoretical lower‐bound as little horizontal ticks
-    sns.stripplot(
-        x="subfolder", y="frac_lb", data=df,
-        marker="_", size=12, color="black", ax=ax,
-    )
-    plt.title("Fraction of Jobs Integral in LP Extreme Point by Family")
-    plt.xlabel("Instance Family")
-    plt.ylabel("Fraction Integral")
-    plt.xticks(rotation=45, ha="right")
-    plt.tight_layout()
-    plt.savefig(plots_dir / "frac_int_by_family.png", dpi=300)
     plt.close()
 
     print("\n✅ Plots saved in:", plots_dir)
